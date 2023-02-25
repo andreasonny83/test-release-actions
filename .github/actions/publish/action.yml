@@ -1,0 +1,69 @@
+name: 'Publish npm package'
+
+inputs:
+  registry:
+    description: 'Target registry (e.g. registry.npmjs.org)'
+    required: true
+    type: string
+  scope:
+    description: 'Package scope'
+    required: true
+    type: string
+  name:
+    description: 'Package name (without scope)'
+    required: true
+    type: string
+  dry-run:
+    description: 'Toggle for --dry-run flag'
+    required: true
+    type: string
+  NPM_FETCH_TOKEN:
+    description: 'Token used to fetch NPM packages'
+    required: true
+    type: string
+  PACKAGE_PUBLISH_TOKEN:
+    description: 'Token used to publish the package to the selected registry'
+    required: false
+    type: string
+  USERNAME:
+    description: 'Username for publishing the package to the selected registry'
+    required: false
+    type: string
+  EMAIL:
+    description: 'Email for publishing the package to the selected registry'
+    required: false
+    type: string
+  PASSWORD:
+    description: 'Password for publishing the package to the selected registry'
+    required: false
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: ./.github/actions/setup
+      with:
+        NPM_TOKEN: ${{ inputs.NPM_FETCH_TOKEN }}
+        registry-url: 'https://${{ inputs.registry }}'
+        scope: '${{ inputs.scope }}'
+
+    - uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
+      with:
+        rename: '${{ inputs.scope }}/${{ inputs.name }}'
+        path: 'packages/${{ inputs.name }}/package.json'
+
+    - run: pnpm config set scope ${{ inputs.scope }}
+      shell: bash
+    - run: pnpm config set ${{ inputs.scope }}:registry 'https://${{ inputs.registry }}/'
+      shell: bash
+    - run: pnpm config set //${{ inputs.registry }}/:_authToken ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
+      shell: bash
+    - run: pnpm config set //${{ inputs.registry }}/:always-auth true
+      shell: bash
+
+    - name: Publish package to https://${{ inputs.registry }}
+      id: publish
+      run: pnpm publish --filter="${{ inputs.scope }}/${{ inputs.name }}" --access=restricted --no-git-checks ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}

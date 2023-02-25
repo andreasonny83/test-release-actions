@@ -50,7 +50,6 @@ jobs:
     - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791
       with:
         fetch-depth: 0
-    - uses: ./.github/actions/setup
     - name: Set Version
       id: set-version
       run: |
@@ -80,9 +79,7 @@ jobs:
       TAG_NUMBER: "${{ needs.version.outputs.RELEASE_TAG_NUMBER }}"
       GITHUB_REF: ${{ github.head_ref }}
     steps:
-      - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # checkout before tagging to tag/release the new version
-        with:
-          fetch-depth: 0
+      - uses: ./.github/actions/setup
       - uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
         with:
           path: "${{ inputs.PACKAGE_NAME }}/package.json"
