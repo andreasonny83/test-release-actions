@@ -43,12 +43,73 @@ jobs:
       GITHUB_REF: ${{ github.head_ref }}
     outputs:
       RELEASE_VERSION: ${{ steps.set-version.outputs.version }}
+      RELEASE_SEMVER: ${{ steps.set-version.outputs.semver }}
+      RELEASE_TAG: ${{ steps.set-version.outputs.versionTagName }}
     steps:
-    - uses: ./.github/actions/setup
+    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      with:
+        fetch-depth: 0
     - name: Set Version
       id: set-version
-      # VERSION=$(echo "${{ env.GITHUB_REF }}" | rev | cut -d "_" -f 1 | rev)
+        # VERSION=$(echo "${{ env.GITHUB_REF }}" | cut -d "_" -f2)
       run: |
-        VERSION=$(node ./node_modules/.bin/semver -c "${{ env.GITHUB_REF }}")
-        echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+        VERSION="0.0.2-beta.2"
+        SEMVER="${VERSION%%-*}"
+        VERSION_SUFFIX="${VERSION#*-}"
+        VERSION_TAG_NAME="${VERSION_SUFFIX%%.*}"
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+        echo "semver=${SEMVER}" >> "$GITHUB_OUTPUT"
+        echo "versionTagName=${VERSION_TAG_NAME}" >> "$GITHUB_OUTPUT"
         echo "Version to be released: ${VERSION}"
+        echo "Semver version: ${SEMVER}"
+        echo "Version Tag Name: ${VERSION_TAG_NAME}"
+
+  release:
+    name: Bump version and release
+    runs-on: ubuntu-latest
+    needs: [version]
+    env:
+      VERSION: "${{ needs.version.outputs.RELEASE_VERSION }}"
+      SEMVER: "${{ needs.version.outputs.RELEASE_SEMVER }}"
+      VERSION_TAG: "${{ needs.version.outputs.RELEASE_TAG }}"
+      GITHUB_REF: ${{ github.head_ref }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+        with:
+          fetch-depth: 0
+      - name: Install npm dependencies
+        uses: ./.github/actions/setup
+      - name: Bump version number
+        uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
+        with:
+          path: "${{ inputs.PACKAGE_NAME }}/package.json"
+          version: "${{ env.VERSION }}"
+      - name: Commit version bump and version tag
+        run: |
+          git status
+          echo "Tagging with: ${{ env.VERSION }}"
+          git config --global user.email "andreasonny83@gmail.com"
+          git config --global user.name "andreasonny83"
+          git add "${{ inputs.PACKAGE_NAME }}/package.json"
+          git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
+          git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
+      - name: Publish package
+        uses: ./.github/actions/publish
+        with:
+          registry: ${{ inputs.REGISTRY }}
+          scope: ${{ inputs.SCOPE }}
+          name: ${{ inputs.PACKAGE_NAME }}
+          version: ${{ env.VERSION }}
+          dry-run: ${{ inputs.DRY_RUN }}
+          NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TAG: ${{ env.VERSION_TAG }}
+      - name: Push Changes
+        if: ${{ inputs.DRY_RUN }} == false
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.head_ref }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
