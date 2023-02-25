@@ -56,7 +56,7 @@ runs:
         registry: https://${{ inputs.registry }}
         package: sonny-test-package-alpha/package.json
         access: restricted
-        tag: ${{ inputs.NPM_TAG}}
+        tag: ${{ secrets.GITHUB_TOKEN }}
 
       # uses: actions/npm@v1
       # with:
