@@ -66,4 +66,4 @@ runs:
         fi
         npm publish --no-git-checks --tag "${{ inputs.NPM_TAG }}"
       env:
-        NODE_AUTH_TOKEN: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
+        NPM_TOKEN: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
