@@ -95,7 +95,6 @@ jobs:
           git add "${{ inputs.PACKAGE_NAME }}/package.json"
           git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
           git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
-          git push origin HEAD:"${{ env.GITHUB_REF }}" --follow-tags
 
       - uses: ./.github/actions/publish
         name: Publish package
@@ -108,8 +107,11 @@ jobs:
           PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REF: ${{ github.head_ref }}
         uses: ad-m/github-push-action@master
         with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-          branch: "${{ github.ref }}"
+          github_token: "${{ env.GITHUB_TOKEN }}"
+          branch: "${{ env.GITHUB_REF }}"
           tags: true
