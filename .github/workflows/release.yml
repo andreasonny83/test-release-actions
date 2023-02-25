@@ -11,6 +11,8 @@ jobs:
   release-workflow:
     if: ${{ github.event.label.name == 'release' }}
     uses: ./.github/workflows/release-workflow.yml
+    permissions:
+      contents: write
     secrets: inherit
     with:
       LABEL_NAME: 'release'
