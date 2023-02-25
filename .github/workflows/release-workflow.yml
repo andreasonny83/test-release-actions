@@ -76,6 +76,7 @@ jobs:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
         name: checkout branch
         with:
+          ref: ${{ env.GITHUB_REF }}
           fetch-depth: 0
       - uses: ./.github/actions/setup
         name: Install npm dependencies
@@ -90,8 +91,8 @@ jobs:
         run: |
           git status
           echo "Tagging with: ${{ env.VERSION }}"
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add "${{ inputs.PACKAGE_NAME }}/package.json"
           git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
           git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
