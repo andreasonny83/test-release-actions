@@ -78,6 +78,7 @@ jobs:
         with:
           ref: ${{ env.GITHUB_REF }}
           fetch-depth: 0
+          persist-credentials: false
       - uses: ./.github/actions/setup
         name: Install npm dependencies
       - uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
