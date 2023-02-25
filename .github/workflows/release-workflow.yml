@@ -92,7 +92,7 @@ jobs:
           git status
           echo "Tagging with: ${{ env.VERSION }}"
           git config --global user.email "andreasonny83@gmail.com"
-          git config --global user.name "Github Actions Bot"
+          git config --global user.name "andreasonny83"
           git add "${{ inputs.PACKAGE_NAME }}/package.json"
           git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
           git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
@@ -109,3 +109,5 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.head_ref }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
