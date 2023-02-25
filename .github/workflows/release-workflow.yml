@@ -47,7 +47,7 @@ jobs:
       RELEASE_TAG_NAME: ${{ steps.set-version.outputs.versionTagName }}
       RELEASE_TAG_NUMBER: ${{ steps.set-version.outputs.versionTagNumber }}
     steps:
-    - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791
+    - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
       with:
         fetch-depth: 0
     - name: Set Version
@@ -84,32 +84,32 @@ jobs:
         with:
           path: "${{ inputs.PACKAGE_NAME }}/package.json"
           version: "${{ env.VERSION }}"
-      - uses: ./.github/actions/publish
-        with:
-          scope: ${{ inputs.SCOPE }}
-          name: ${{ inputs.PACKAGE_NAME }}
-          dry-run: ${{ inputs.DRY_RUN }}
-          registry: ${{ inputs.REGISTRY }}
-          NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Commit version bump and version tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git status
-          echo "Tagging with: ${{ env.VERSION }}"
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add "packages/${{ inputs.PACKAGE_NAME }}/package.json"
-          git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
-          git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
-          git push origin HEAD:"${{ env.GITHUB_REF }}" --follow-tags
+      # - uses: ./.github/actions/publish
+      #   with:
+      #     scope: ${{ inputs.SCOPE }}
+      #     name: ${{ inputs.PACKAGE_NAME }}
+      #     dry-run: ${{ inputs.DRY_RUN }}
+      #     registry: ${{ inputs.REGISTRY }}
+      #     NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Commit version bump and version tag
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     git status
+      #     echo "Tagging with: ${{ env.VERSION }}"
+      #     git config user.name "${{ github.actor }}"
+      #     git config user.email "${{ github.actor }}@users.noreply.github.com"
+      #     git add "packages/${{ inputs.PACKAGE_NAME }}/package.json"
+      #     git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
+      #     git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
+      #     git push origin HEAD:"${{ env.GITHUB_REF }}" --follow-tags
 
-      # Note that the first git push command should be successful in most cases.
-      # The second git push command is only used as a backup option in case the first git push
-      # command fails for some reason.
-      - name: Push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git push origin HEAD:${{ github.ref }} --follow-tags
+      # # Note that the first git push command should be successful in most cases.
+      # # The second git push command is only used as a backup option in case the first git push
+      # # command fails for some reason.
+      # - name: Push changes
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     git push origin HEAD:${{ github.ref }} --follow-tags
