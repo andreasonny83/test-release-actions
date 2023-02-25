@@ -84,15 +84,6 @@ jobs:
         with:
           path: "${{ inputs.PACKAGE_NAME }}/package.json"
           version: "${{ env.VERSION }}"
-      - uses: ./.github/actions/publish
-        name: Publish package
-        with:
-          registry: ${{ inputs.REGISTRY }}
-          scope: ${{ inputs.SCOPE }}
-          name: ${{ inputs.PACKAGE_NAME }}
-          dry-run: ${{ inputs.DRY_RUN }}
-          NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit version bump and version tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -106,11 +97,19 @@ jobs:
           git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
           git push origin HEAD:"${{ env.GITHUB_REF }}" --follow-tags
 
-      # Note that the first git push command should be successful in most cases.
-      # The second git push command is only used as a backup option in case the first git push
-      # command fails for some reason.
-      - name: Push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git push origin HEAD:${{ github.ref }} --follow-tags
+      - uses: ./.github/actions/publish
+        name: Publish package
+        with:
+          registry: ${{ inputs.REGISTRY }}
+          scope: ${{ inputs.SCOPE }}
+          name: ${{ inputs.PACKAGE_NAME }}
+          dry-run: ${{ inputs.DRY_RUN }}
+          NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          branch: "${{ github.ref }}"
+          tags: true
