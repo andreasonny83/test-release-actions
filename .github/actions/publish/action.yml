@@ -47,19 +47,15 @@ runs:
         path: "${{ inputs.name }}/package.json"
         rename: "${{ inputs.scope }}/${{ inputs.name }}"
         version: "${{ inputs.version }}"
-    - run: cd "${{ inputs.name }}"
-      shell: bash
-    - run: npm config set scope ${{ inputs.scope }}
-      shell: bash
-    - run: npm config set "${{ inputs.scope }}:registry" https://${{ inputs.registry }}/
-      shell: bash
-    - run: npm config set "//${{ inputs.registry }}/:_authToken" "${{ inputs.PACKAGE_PUBLISH_TOKEN }}"
-      shell: bash
-    - run: npm config set registry:always-auth true
-      shell: bash
     - name: Publish package to https://${{ inputs.registry }}
       shell: bash
       run: |
+        cd "${{ inputs.name }}"
+        npm config set scope ${{ inputs.scope }}
+        npm config set "${{ inputs.scope }}:registry" https://${{ inputs.registry }}/
+        npm config set "//${{ inputs.registry }}/:_authToken" "${{ inputs.PACKAGE_PUBLISH_TOKEN }}"
+        npm config set registry:always-auth true
+
         if [ -n "${{ inputs.NPM_TAG }}" ] && [ ! "${{ inputs.dry-run }}" ]; then
           echo "NPM tag is not set. Skipping tag creation."
           npm publish --no-git-checks ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
