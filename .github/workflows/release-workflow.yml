@@ -107,6 +107,7 @@ jobs:
           PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TAG: ${{ env.VERSION_TAG }}
       - name: Push Changes
+        if: ${{ inputs.DRY_RUN }} == false
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.head_ref }}

@@ -65,7 +65,7 @@ runs:
     - name: Push the npm tag
       shell: bash
       run: |
-        if [ -z "${{ inputs.NPM_TAG }}" ]; then
+        if [ -n "${{ inputs.NPM_TAG }}" ] && [ ! "${{ inputs.DRY_RUN }}" ]; then
           echo "NPM tag is not set. Skipping tag creation."
           exit 0
         fi
