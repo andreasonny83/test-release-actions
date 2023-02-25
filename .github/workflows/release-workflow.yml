@@ -43,13 +43,15 @@ jobs:
       GITHUB_REF: ${{ github.head_ref }}
     outputs:
       RELEASE_VERSION: ${{ steps.set-version.outputs.version }}
+      RELEASE_TAG: ${{ steps.set-version.outputs.version-tag }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791
+      with:
+        fetch-depth: 0
     - uses: ./.github/actions/setup
     - name: Set Version
       id: set-version
-      # VERSION=$(echo "${{ env.GITHUB_REF }}" | rev | cut -d "_" -f 1 | rev)
       run: |
-        VERSION=$(node ./node_modules/.bin/semver -c "${{ env.GITHUB_REF }}")
-        echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+        VERSION=$(echo "${{ env.GITHUB_REF }}" | cut -d "_" -f 2)
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
         echo "Version to be released: ${VERSION}"
