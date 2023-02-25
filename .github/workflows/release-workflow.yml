@@ -80,7 +80,9 @@ jobs:
       GITHUB_REF: ${{ github.head_ref }}
     steps:
       - uses: ./.github/actions/setup
+        name: Checkout and install dependencies
       - uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
+        name: Bump version number
         with:
           path: "${{ inputs.PACKAGE_NAME }}/package.json"
           version: "${{ env.VERSION }}"
