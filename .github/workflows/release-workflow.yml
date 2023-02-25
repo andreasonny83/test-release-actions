@@ -53,7 +53,7 @@ jobs:
       id: set-version
         # VERSION=$(echo "${{ env.GITHUB_REF }}" | cut -d "_" -f2)
       run: |
-        VERSION="0.0.2-beta.2"
+        VERSION="0.0.2-beta.3"
         SEMVER="${VERSION%%-*}"
         VERSION_SUFFIX="${VERSION#*-}"
         VERSION_TAG_NAME="${VERSION_SUFFIX%%.*}"
