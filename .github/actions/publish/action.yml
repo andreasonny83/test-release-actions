@@ -52,7 +52,7 @@ runs:
       with:
         token: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
         registry: https://${{ inputs.registry }}
-        package: sonny-test-package-alpha
+        package: sonny-test-package-alpha/package.json
         access: restricted
         tag: ${{ inputs.NPM_TAG}}
 
