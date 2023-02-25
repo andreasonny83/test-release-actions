@@ -107,3 +107,5 @@ jobs:
           PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Push Changes
         uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.head_ref }}
