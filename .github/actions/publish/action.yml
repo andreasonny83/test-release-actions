@@ -51,11 +51,11 @@ runs:
       shell: bash
     - run: npm config set scope ${{ inputs.scope }}
       shell: bash
-    - run: npm config set ${{ inputs.scope }}:registry 'https://${{ inputs.registry }}/'
+    - run: npm config set '"${{ inputs.scope }}":registry' https://${{ inputs.registry }}/
       shell: bash
     - run: cat .npmrc
       shell: bash
-    - run: npm config set //${{ inputs.registry }}/:_authToken ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
+    - run: npm config set '//"${{ inputs.registry }}"/:_authToken' "${{ inputs.PACKAGE_PUBLISH_TOKEN }}"
       shell: bash
     - run: npm config set //${{ inputs.registry }}/:always-auth true
       shell: bash
