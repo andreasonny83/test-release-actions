@@ -79,21 +79,23 @@ jobs:
       GITHUB_REF: ${{ github.head_ref }}
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+        name: checkout branch
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-        name: Checkout and install dependencies
+        name: Install npm dependencies
       - uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
         name: Bump version number
         with:
           path: "${{ inputs.PACKAGE_NAME }}/package.json"
           version: "${{ env.VERSION }}"
       - uses: ./.github/actions/publish
+        name: Publish package
         with:
+          registry: ${{ inputs.REGISTRY }}
           scope: ${{ inputs.SCOPE }}
           name: ${{ inputs.PACKAGE_NAME }}
           dry-run: ${{ inputs.DRY_RUN }}
-          registry: ${{ inputs.REGISTRY }}
           NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit version bump and version tag
