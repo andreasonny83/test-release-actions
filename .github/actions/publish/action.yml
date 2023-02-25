@@ -48,9 +48,18 @@ runs:
         rename: "${{ inputs.scope }}/${{ inputs.name }}"
         version: "${{ inputs.version }}"
     - name: Publish to GitHub Package Registry
-      uses: actions/npm@v1
+      uses: JS-DevTools/npm-publish@v1
       with:
-        args: "publish --registry=https://npm.pkg.github.com --access restricted --tag ${{ inputs.NPM_TAG}}"
+        token: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
+        registry: https://${{ inputs.registry }}
+        package: sonny-test-package-alpha
+        access: restricted
+        tag: ${{ inputs.NPM_TAG}}
+
+      # uses: actions/npm@v1
+      # with:
+      #   args: "publish --registry=https://npm.pkg.github.com --access restricted --tag ${{ inputs.NPM_TAG}}"
+
     # - name: Publish package to https://${{ inputs.registry }}
     #   shell: bash
     #   run: |
