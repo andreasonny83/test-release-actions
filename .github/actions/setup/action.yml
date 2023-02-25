@@ -14,7 +14,6 @@ runs:
       with:
         path: |
           node_modules
-          packages/**/node_modules
         key: cache-node-modules-${{ hashFiles('package-lock.json') }}
     - name: Install dependencies
       run: npm ci

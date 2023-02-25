@@ -68,7 +68,7 @@ jobs:
         echo "Version Tag Number: ${VERSION_TAG_NUMBER}"
 
   release:
-    name: Bump package version and release
+    name: Bump version and release
     runs-on: ubuntu-latest
     needs: [version]
     env:
@@ -106,7 +106,7 @@ jobs:
           echo "Tagging with: ${{ env.VERSION }}"
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add "packages/${{ inputs.PACKAGE_NAME }}/package.json"
+          git add "${{ inputs.PACKAGE_NAME }}/package.json"
           git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
           git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
           git push origin HEAD:"${{ env.GITHUB_REF }}" --follow-tags
