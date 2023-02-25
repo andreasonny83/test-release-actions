@@ -51,8 +51,9 @@ jobs:
         fetch-depth: 0
     - name: Set Version
       id: set-version
+        # VERSION=$(echo "${{ env.GITHUB_REF }}" | cut -d "_" -f2)
       run: |
-        VERSION=$(echo "${{ env.GITHUB_REF }}" | cut -d "_" -f2)
+        VERSION="0.0.2-beta.2"
         SEMVER="${VERSION%%-*}"
         VERSION_SUFFIX="${VERSION#*-}"
         VERSION_TAG_NAME="${VERSION_SUFFIX%%.*}"
@@ -102,9 +103,11 @@ jobs:
           registry: ${{ inputs.REGISTRY }}
           scope: ${{ inputs.SCOPE }}
           name: ${{ inputs.PACKAGE_NAME }}
+          version: ${{ env.VERSION }}
           dry-run: ${{ inputs.DRY_RUN }}
           NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TAG: ${{ env.VERSION_TAG }}
       - name: Push Changes
         uses: ad-m/github-push-action@master
         with:

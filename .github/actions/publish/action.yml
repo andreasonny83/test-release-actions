@@ -21,9 +21,17 @@ inputs:
     description: 'Token used to fetch NPM packages'
     required: true
     type: string
+  NPM_TAG:
+    description: 'The NPM tag to be used for the released version'
+    required: false
+    type: string
   PACKAGE_PUBLISH_TOKEN:
     description: 'Token used to publish the package to the selected registry'
     required: false
+    type: string
+  version:
+    description: 'The version to be released'
+    required: true
     type: string
 
 runs:
@@ -31,9 +39,9 @@ runs:
   steps:
     - uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
       with:
-        rename: '${{ inputs.scope }}/${{ inputs.name }}'
-        path: '${{ inputs.name }}/package.json'
-
+        path: "${{ inputs.name }}/package.json"
+        rename: "${{ inputs.scope }}/${{ inputs.name }}"
+        version: "${{ inputs.version }}"
     - run: npm config set scope ${{ inputs.scope }}
       shell: bash
     - run: npm config set ${{ inputs.scope }}:registry 'https://${{ inputs.registry }}/'
@@ -46,5 +54,16 @@ runs:
     - name: Publish package to https://${{ inputs.registry }}
       shell: bash
       run: npm publish --filter="${{ inputs.scope }}/${{ inputs.name }}" --access=restricted --no-git-checks ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
+
+    - name: Push the npm tag
+      shell: bash
+      run: |
+        if [ -z "${{ inputs.NPM_TAG }}" ]; then
+          echo "NPM tag is not set. Skipping tag creation."
+          exit 0
+        fi
+        npm dist-tag add "${{ inputs.scope }}/${{ inputs.name }}@${{ inputs.version }}" "${{ inputs.NPM_TAG }}"
       env:
         NODE_AUTH_TOKEN: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
