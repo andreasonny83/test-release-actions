@@ -91,7 +91,7 @@ jobs:
         run: |
           git status
           echo "Tagging with: ${{ env.VERSION }}"
-          git config --global user.email "bot@example.com"
+          git config --global user.email "andreasonny83@gmail.com"
           git config --global user.name "Github Actions Bot"
           git add "${{ inputs.PACKAGE_NAME }}/package.json"
           git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
