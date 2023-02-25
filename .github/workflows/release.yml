@@ -22,4 +22,4 @@ jobs:
       ENV_TAG: 'release'
       SCOPE: '@andreasonny83'
       REGISTRY: 'npm.pkg.github.com'
-      DRY_RUN: true
+      DRY_RUN: false
