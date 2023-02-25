@@ -56,7 +56,7 @@ runs:
 
         if [ -n "${{ inputs.NPM_TAG }}" ] && [ ! "${{ inputs.dry-run }}" ]; then
           echo "NPM tag is not set. Skipping tag creation."
-          npm publish --no-git-checks ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
+          npm publish --no-git-checks --access=restricted ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
           exit 0
         fi
-        npm publish --no-git-checks --tag "${{ inputs.NPM_TAG }}"
+        npm publish --no-git-checks --access=restricted --tag "${{ inputs.NPM_TAG }}"
