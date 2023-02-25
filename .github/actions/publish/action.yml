@@ -47,16 +47,20 @@ runs:
         path: "${{ inputs.name }}/package.json"
         rename: "${{ inputs.scope }}/${{ inputs.name }}"
         version: "${{ inputs.version }}"
-    - name: Publish package to https://${{ inputs.registry }}
-      shell: bash
-      run: |
-        cd "${{ inputs.name }}"
-        npm config set registry https://npm.pkg.github.com/
-        npm config set "//npm.pkg.github.com/:_authToken" "${{ inputs.PACKAGE_PUBLISH_TOKEN }}"
+    - name: Publish to GitHub Package Registry
+      uses: actions/npm@v1
+      with:
+        args: "publish --registry=https://npm.pkg.github.com --access restricted --tag ${{ inputs.NPM_TAG}}"
+    # - name: Publish package to https://${{ inputs.registry }}
+    #   shell: bash
+    #   run: |
+    #     cd "${{ inputs.name }}"
+    #     npm config set registry https://npm.pkg.github.com/
+    #     npm config set "//npm.pkg.github.com/:_authToken" "${{ inputs.PACKAGE_PUBLISH_TOKEN }}"
 
-        if [ -n "${{ inputs.NPM_TAG }}" ] && [ ! "${{ inputs.dry-run }}" ]; then
-          echo "NPM tag is not set. Skipping tag creation."
-          npm publish --no-git-checks --access=restricted ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
-          exit 0
-        fi
-        npm publish --no-git-checks --access=restricted --tag "${{ inputs.NPM_TAG }}"
+    #     if [ -n "${{ inputs.NPM_TAG }}" ] && [ ! "${{ inputs.dry-run }}" ]; then
+    #       echo "NPM tag is not set. Skipping tag creation."
+    #       npm publish --no-git-checks --access=restricted ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
+    #       exit 0
+    #     fi
+    #     npm publish --no-git-checks --access=restricted --tag "${{ inputs.NPM_TAG }}"
