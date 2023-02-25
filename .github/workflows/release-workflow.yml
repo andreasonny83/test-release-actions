@@ -44,8 +44,7 @@ jobs:
     outputs:
       RELEASE_VERSION: ${{ steps.set-version.outputs.version }}
       RELEASE_SEMVER: ${{ steps.set-version.outputs.semver }}
-      RELEASE_TAG_NAME: ${{ steps.set-version.outputs.versionTagName }}
-      RELEASE_TAG_NUMBER: ${{ steps.set-version.outputs.versionTagNumber }}
+      RELEASE_TAG: ${{ steps.set-version.outputs.versionTagName }}
     steps:
     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
       with:
@@ -57,15 +56,12 @@ jobs:
         SEMVER="${VERSION%%-*}"
         VERSION_SUFFIX="${VERSION#*-}"
         VERSION_TAG_NAME="${VERSION_SUFFIX%%.*}"
-        VERSION_TAG_NUMBER="${VERSION_SUFFIX#*.}"
         echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
         echo "semver=${SEMVER}" >> "$GITHUB_OUTPUT"
         echo "versionTagName=${VERSION_TAG_NAME}" >> "$GITHUB_OUTPUT"
-        echo "versionTagNumber=${VERSION_TAG_NUMBER}" >> "$GITHUB_OUTPUT"
         echo "Version to be released: ${VERSION}"
         echo "Semver version: ${SEMVER}"
         echo "Version Tag Name: ${VERSION_TAG_NAME}"
-        echo "Version Tag Number: ${VERSION_TAG_NUMBER}"
 
   release:
     name: Bump version and release
@@ -74,8 +70,7 @@ jobs:
     env:
       VERSION: "${{ needs.version.outputs.RELEASE_VERSION }}"
       SEMVER: "${{ needs.version.outputs.RELEASE_SEMVER }}"
-      TAG_NAME: "${{ needs.version.outputs.RELEASE_TAG_NAME }}"
-      TAG_NUMBER: "${{ needs.version.outputs.RELEASE_TAG_NUMBER }}"
+      VERSION_TAG: "${{ needs.version.outputs.RELEASE_TAG }}"
       GITHUB_REF: ${{ github.head_ref }}
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
