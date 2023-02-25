@@ -67,8 +67,6 @@ jobs:
     name: Bump version and release
     runs-on: ubuntu-latest
     needs: [version]
-    permissions:
-      contents: write
     env:
       VERSION: "${{ needs.version.outputs.RELEASE_VERSION }}"
       SEMVER: "${{ needs.version.outputs.RELEASE_SEMVER }}"
