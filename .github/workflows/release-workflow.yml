@@ -91,8 +91,8 @@ jobs:
         run: |
           git status
           echo "Tagging with: ${{ env.VERSION }}"
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --global user.email "bot@example.com"
+          git config --global user.name "Github Actions Bot"
           git add "${{ inputs.PACKAGE_NAME }}/package.json"
           git tag -a "${{ inputs.TAG_PREFIX }}${{ env.VERSION }}" -m "${{ inputs.PACKAGE_NAME }} v${{ env.VERSION }}"
           git commit -m "Bump ${{ inputs.PACKAGE_NAME }} version to ${{ env.VERSION }}"
@@ -106,11 +106,4 @@ jobs:
           NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Push Changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REF: ${{ github.head_ref }}
         uses: ad-m/github-push-action@master
-        with:
-          github_token: "${{ env.GITHUB_TOKEN }}"
-          branch: "${{ env.GITHUB_REF }}"
-          tags: true
