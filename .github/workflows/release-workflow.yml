@@ -103,8 +103,8 @@ jobs:
           name: ${{ inputs.PACKAGE_NAME }}
           version: ${{ env.VERSION }}
           dry-run: ${{ inputs.DRY_RUN }}
-          NPM_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PACKAGE_PUBLISH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_FETCH_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
+          PACKAGE_PUBLISH_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
           NPM_TAG: ${{ env.VERSION_TAG }}
       - name: Push Changes
         if: ${{ inputs.DRY_RUN }} == false
