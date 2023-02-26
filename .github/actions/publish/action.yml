@@ -41,8 +41,6 @@ runs:
       uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
       with:
         fetch-depth: 0
-    - run: echo ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
-      shell: bash
     - name: Update package.json
       uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
       with:
