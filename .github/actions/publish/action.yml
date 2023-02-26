@@ -1,0 +1,75 @@
+name: 'Publish npm package'
+
+inputs:
+  registry:
+    description: 'Target registry (e.g. registry.npmjs.org)'
+    required: true
+    type: string
+  scope:
+    description: 'Package scope'
+    required: true
+    type: string
+  name:
+    description: 'Package name (without scope)'
+    required: true
+    type: string
+  dry-run:
+    description: 'Toggle for --dry-run flag'
+    required: true
+    type: string
+  NPM_FETCH_TOKEN:
+    description: 'Token used to fetch NPM packages'
+    required: true
+    type: string
+  NPM_TAG:
+    description: 'The NPM tag to be used for the released version'
+    required: false
+    type: string
+  PACKAGE_PUBLISH_TOKEN:
+    description: 'Token used to publish the package to the selected registry'
+    required: false
+    type: string
+  version:
+    description: 'The version to be released'
+    required: true
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+    - name: checkout branch
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+      with:
+        fetch-depth: 0
+    - name: Update package.json
+      uses: jaywcjlove/github-action-package@49a5421db5e6491fef68091038ab6f3516755154
+      with:
+        path: "${{ inputs.name }}/package.json"
+        rename: "${{ inputs.scope }}/${{ inputs.name }}"
+        version: "${{ inputs.version }}"
+    - name: Publish to GitHub Package Registry
+      uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ inputs.PACKAGE_PUBLISH_TOKEN }}
+        registry: https://${{ inputs.registry }}
+        package: sonny-test-package-alpha/package.json
+        access: restricted
+        tag: ${{ inputs.NPM_TAG }}
+
+      # uses: actions/npm@v1
+      # with:
+      #   args: "publish --registry=https://npm.pkg.github.com --access restricted --tag ${{ inputs.NPM_TAG}}"
+
+    # - name: Publish package to https://${{ inputs.registry }}
+    #   shell: bash
+    #   run: |
+    #     cd "${{ inputs.name }}"
+    #     npm config set registry https://npm.pkg.github.com/
+    #     npm config set "//npm.pkg.github.com/:_authToken" "${{ inputs.PACKAGE_PUBLISH_TOKEN }}"
+
+    #     if [ -n "${{ inputs.NPM_TAG }}" ] && [ ! "${{ inputs.dry-run }}" ]; then
+    #       echo "NPM tag is not set. Skipping tag creation."
+    #       npm publish --no-git-checks --access=restricted ${{ inputs.dry-run == 'true' && '--dry-run' || '' }}
+    #       exit 0
+    #     fi
+    #     npm publish --no-git-checks --access=restricted --tag "${{ inputs.NPM_TAG }}"
