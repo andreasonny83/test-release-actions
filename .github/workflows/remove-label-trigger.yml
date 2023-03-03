@@ -22,7 +22,7 @@ jobs:
           debug: true
           script: |
             const label = context.payload.label.name;
-            return github.rest.issues.removeLabels({
+            return github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
