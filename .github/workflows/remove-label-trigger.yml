@@ -15,13 +15,17 @@ jobs:
     #   pull-requests: write
     steps:
       - name: Delete Label
+        id: delete-label
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          script: |
-            await github.rest.issues.removeLabel({
-              owner: github.repository_owner,
-              repo: github.repository,
-              issue_number: github.context.issue.number,
-              name: process.env.labelName
-            });
+            # await github.rest.issues.removeLabel({
+            #   owner: github.repository_owner,
+            #   repo: github.repository,
+            #   issue_number: github.context.issue.number,
+            #   name: process.env.labelName
+            # });
+
+          script: return github;
+      - name: Get result
+        run: echo "${{steps.delete-label.outputs.result}}"
