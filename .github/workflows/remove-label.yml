@@ -1,0 +1,32 @@
+name: Remove Label Workflow
+
+on:
+  workflow_call:
+    inputs:
+      LABEL_NAME:
+        description: 'The PR Github label name required for the release'
+        required: true
+        type: string
+
+jobs:
+  remove-labels:
+    runs-on: ubuntu-latest
+    env:
+      LABEL_NAME: "remove-label"
+    name: Remove PR labels
+    # permissions:
+    #   issues: write
+    #   pull-requests: write
+    steps:
+      - name: Delete Label
+        uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          script: |
+            const octokit = new Octokit();
+            await octokit.issues.removeLabel({
+              owner: github.repository_owner,
+              repo: github.repository,
+              issue_number: github.context.issue.number,
+              name: process.env.labelName
+            });
