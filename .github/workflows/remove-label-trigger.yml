@@ -8,7 +8,6 @@ jobs:
   remove-labels:
     runs-on: ubuntu-latest
     permissions:
-      issues: write
       pull-requests: write
     env:
       LABEL_NAME: "remove-label"
@@ -23,12 +22,11 @@ jobs:
           debug: true
           script: |
             const label = context.payload.label.name;
-            const issue_number = context.number;
-            return github.rest.issues.addLabels({
+            return github.rest.issues.removeLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels:['bug']
+              name: label
             });
 
       - name: Get result
