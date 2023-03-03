@@ -7,12 +7,12 @@ on:
 jobs:
   remove-labels:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     env:
       LABEL_NAME: "remove-label"
     name: Remove PR labels
-    # permissions:
-    #   issues: write
-    #   pull-requests: write
     steps:
       - name: Delete Label
         id: delete-label
