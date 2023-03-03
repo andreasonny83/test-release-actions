@@ -9,25 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    env:
-      LABEL_NAME: "remove-label"
     name: Remove PR labels
     steps:
       - name: Delete Label
-        id: delete-label
         uses: actions/github-script@98814c53be79b1d30f795b907e553d8679345975
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          result-encoding: string
-          debug: true
           script: |
-            const label = context.payload.label.name;
             return github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              name: label
+              name: context.payload.label.name
             });
-
-      - name: Get result
-        run: echo "${{steps.delete-label.outputs.result}}"
