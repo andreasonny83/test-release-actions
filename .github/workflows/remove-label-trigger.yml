@@ -19,8 +19,7 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           script: |
-            const octokit = new Octokit();
-            await octokit.issues.removeLabel({
+            await github.rest.issues.removeLabel({
               owner: github.repository_owner,
               repo: github.repository,
               issue_number: github.context.issue.number,
