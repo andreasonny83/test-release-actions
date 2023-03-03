@@ -24,11 +24,11 @@ jobs:
           script: |
             const label = context.payload.label.name;
             const issue_number = context.number;
-            return github.rest.issues.removeLabel({
+            return github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              name: 'remove-label'
+              labels:['bug']
             });
 
       - name: Get result
