@@ -25,10 +25,10 @@ jobs:
             const label = context.payload.label.name;
             const issue_number = context.number;
             return github.rest.issues.removeLabel({
-              owner: github.repository_owner,
-              repo: github.repository,
-              issue_number: issue_number,
-              name: label
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'remove-label'
             });
 
       - name: Get result
