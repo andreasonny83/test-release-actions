@@ -26,12 +26,8 @@ jobs:
             #   issue_number: github.context.issue.number,
             #   name: process.env.labelName
             # });
-
+          debug: true
           script: |
-            github.rest.issues.get({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            })
+            return context;
       - name: Get result
         run: echo "${{steps.delete-label.outputs.result}}"
