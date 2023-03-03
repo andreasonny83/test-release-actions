@@ -1,4 +1,4 @@
-name: Publish package to GitHub
+name: Remove GitHub Label
 
 on:
   pull_request:
