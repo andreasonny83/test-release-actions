@@ -20,14 +20,16 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           result-encoding: string
-            # await github.rest.issues.removeLabel({
-            #   owner: github.repository_owner,
-            #   repo: github.repository,
-            #   issue_number: github.context.issue.number,
-            #   name: process.env.labelName
-            # });
           debug: true
           script: |
-            return JSON.stringify(context);
+            const label = context.payload.label.name;
+            const issue_number = context.number;
+            return github.rest.issues.removeLabel({
+              owner: github.repository_owner,
+              repo: github.repository,
+              issue_number: issue_number,
+              name: label
+            });
+
       - name: Get result
         run: echo "${{steps.delete-label.outputs.result}}"
