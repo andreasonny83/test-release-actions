@@ -1,0 +1,25 @@
+name: Publish package to GitHub
+
+on:
+  pull_request:
+    types: [labeled]
+    branches:
+      - 'main'
+      - 'release*'
+      - 'hotfix*'
+jobs:
+  release-workflow:
+    if: ${{ github.event.label.name == 'release-label-b' }}
+    uses: ./.github/workflows/release-workflow.yml
+    permissions:
+      contents: write
+    secrets: inherit
+    with:
+      LABEL_NAME: 'release-label-a'
+      PACKAGEJSON_DIR: 'sonny-test-package-alpha'
+      TAG_PREFIX: 'v'
+      PACKAGE_NAME: 'sonny-test-package-alpha'
+      ENV_TAG: 'release'
+      SCOPE: '@andreasonny83'
+      REGISTRY: 'npm.pkg.github.com'
+      DRY_RUN: false
