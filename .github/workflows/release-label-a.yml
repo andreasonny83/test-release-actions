@@ -2,14 +2,14 @@ name: Release Label A
 
 on:
   pull_request:
-    types: [labeled]
+    types: [ labeled ]
     branches:
       - 'main'
       - 'release*'
       - 'hotfix*'
 jobs:
   release-workflow:
-    if: ${{ github.event.label.name == 'release-label-b' }}
+    if: ${{ github.event.label.name == 'release-label-a' }}
     uses: ./.github/workflows/release-workflow.yml
     permissions:
       contents: write
