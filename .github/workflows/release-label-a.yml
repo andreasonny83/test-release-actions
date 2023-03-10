@@ -1,4 +1,4 @@
-name: Publish package to GitHub
+name: Release Label A
 
 on:
   pull_request:
